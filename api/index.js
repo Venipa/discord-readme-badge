@@ -25,8 +25,7 @@ async function parsePresence(user) {
   const username = processText(user.username);
   let pfpImage = user.displayAvatarURL({
     format: "jpg",
-    dynamic: true,
-    size: 512,
+    size: 256
   });
   pfpImage = await imageToBase64(pfpImage);
   pfpImage = "data:image/png;base64," + pfpImage;
@@ -126,9 +125,9 @@ async function parsePresence(user) {
     state,
   };
 }
-const userWhitelist = (process.env.GUILD_USER_WHITELIST || "").split(",");
+// const userWhitelist = (process.env.GUILD_USER_WHITELIST || "").split(",");
 const userGuildLookup = process.env.GUILD_ID;
-module.exports = async (req, res) => {
+export default function (req, res) {
 
   const { id } = req.query;
   if (!id) {
@@ -136,36 +135,19 @@ module.exports = async (req, res) => {
       message: "No id defined"
     });
   }
-  if (!userWhitelist.includes(id)) {
-    return res.status(401).json({
-      error: "User not whitelisted"
-    });
-  }
 
   res.setHeader("Content-Type", "image/svg+xml");
   res.setHeader("Cache-Control", "public, max-age=30");
   const client = new Discord.Client();
 
-  client.login(process.env.BOTTOKEN).then(async () => {
-    const member = await client.guilds
-      .fetch(userGuildLookup)
-      .then(async (guild) => {
-        return await guild.members
-          .fetch({
-            user: id,
-            cache: false,
-            force: true,
-          })
-          .catch((error) => {
-            return error;
-          });
-      });
+  return client.login(process.env.DISCORD_TOKEN).then(async () => {
+    const member = await client.guilds.fetch(userGuildLookup).then((g) => g.members.fetch(id));
     client.destroy();
 
     // console.log(member);
 
     let card;
-    if (member instanceof Discord.DiscordAPIError) {
+    if (!member || member instanceof Discord.DiscordAPIError) {
       card = new Card({
         username: "Error",
         pfpImage:
