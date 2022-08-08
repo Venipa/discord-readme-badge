@@ -126,18 +126,29 @@ async function parsePresence(user) {
     state,
   };
 }
-
+const userWhitelist = (process.env.GUILD_USER_WHITELIST || "").split(",");
+const userGuildLookup = process.env.GUILD_ID;
 module.exports = async (req, res) => {
-  res.setHeader("Content-Type", "image/svg+xml");
-  res.setHeader("Cache-Control", "public, max-age=30");
 
   const { id } = req.query;
+  if (!id) {
+    return res.status(404).json({
+      message: "No id defined"
+    });
+  }
+  if (!userWhitelist.includes(id)) {
+    return res.status(401).json({
+      error: "User not whitelisted"
+    });
+  }
 
+  res.setHeader("Content-Type", "image/svg+xml");
+  res.setHeader("Cache-Control", "public, max-age=30");
   const client = new Discord.Client();
 
   client.login(process.env.BOTTOKEN).then(async () => {
     const member = await client.guilds
-      .fetch("839432085856583730")
+      .fetch(userGuildLookup)
       .then(async (guild) => {
         return await guild.members
           .fetch({
@@ -160,7 +171,7 @@ module.exports = async (req, res) => {
         pfpImage:
           "https://canary.discord.com/assets/1cbd08c76f8af6dddce02c5138971129.png",
         status: "dnd",
-        game: "Zyplos/discord-readme-badge",
+        game: "Venipa/discord-readme-badge",
         gameType: "Check",
         details: processText(member.toString()),
         detailsImage: false,
