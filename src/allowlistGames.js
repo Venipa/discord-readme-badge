@@ -15,5 +15,6 @@ module.exports = [
   "aseprite",
   "intellij idea ultimate",
   "intellij idea community",
-  "youtube music for desktop"
+  "youtube music for desktop",
+  "youtube music"
 ];
