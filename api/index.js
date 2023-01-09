@@ -81,7 +81,7 @@ async function parsePresence(user) {
   let gameType = "Playing";
 
   if (game == "Spotify") gameType = "Listening to";
-  if (game == "Youtube Music") gameType = "Listening to";
+  if (game == "YouTube Music") gameType = "Listening to";
 
   if (!gameObject.details && !gameObject.state) {
     return {
