@@ -100,6 +100,7 @@ async function parsePresence(user) {
 
   let detailsImage = false;
   if (gameObject.assets && gameObject.assets.largeImage) {
+    console.log("assets", gameObject.assets);
     if (/^http/.test(gameObject.assets.largeImage)) detailsImage = imageToBase64(gameObject.assets.largeImage)
     else detailsImage = `https://cdn.discordapp.com/app-assets/${gameObject.applicationID}/${gameObject.assets.largeImage}.png`;
 
