@@ -100,8 +100,8 @@ async function parsePresence(user) {
 
   let detailsImage = false;
   if (gameObject.assets && gameObject.assets.largeImage) {
-    console.log("assets", gameObject.assets);
-    if (/^http/.test(gameObject.assets.largeImage)) detailsImage = gameObject.assets.largeImage
+    // console.log("assets", gameObject.assets);
+    if (/^mp\:external/.test(gameObject.assets.largeImage)) detailsImage = `https://media.discordapp.net/${gameObject.assets.largeImage.replace(/mp:/, ``)}`
     else detailsImage = `https://cdn.discordapp.com/app-assets/${gameObject.applicationID}/${gameObject.assets.largeImage}.png`;
 
     if (game == "Spotify")
