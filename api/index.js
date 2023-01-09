@@ -29,7 +29,6 @@ async function parsePresence(user) {
   });
   pfpImage = await imageToBase64(pfpImage);
   pfpImage = "data:image/png;base64," + pfpImage;
-
   const statuses = user.presence.clientStatus;
   if (!statuses) {
     return {
@@ -82,6 +81,7 @@ async function parsePresence(user) {
   let gameType = "Playing";
 
   if (game == "Spotify") gameType = "Listening to";
+  if (game == "Youtube Music") gameType = "Listening to";
 
   if (!gameObject.details && !gameObject.state) {
     return {
@@ -100,7 +100,8 @@ async function parsePresence(user) {
 
   let detailsImage = false;
   if (gameObject.assets && gameObject.assets.largeImage) {
-    detailsImage = `https://cdn.discordapp.com/app-assets/${gameObject.applicationID}/${gameObject.assets.largeImage}.png`;
+    if (/^http/.test(gameObject.assets.largeImage)) detailsImage = imageToBase64(gameObject.assets.largeImage)
+    else detailsImage = `https://cdn.discordapp.com/app-assets/${gameObject.applicationID}/${gameObject.assets.largeImage}.png`;
 
     if (game == "Spotify")
       detailsImage = `https://i.scdn.co/image/${gameObject.assets.largeImage.replace(
